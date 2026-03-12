@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+/* ---------------- Sidebar vertical ---------------- */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 260px;
+    background-color: #343a40;
+    color: white;
+    padding-top: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar h4 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    color: white;
+    display: block;
+    padding: 12px 20px;
+    text-decoration: none;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+    text-decoration: none;
+}
+
+.sidebar .active {
+    background-color: #007bff;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 270px; /* width sidebar + spacing */
+    padding: 20px;
+}
+
+/* Dashboard cards */
+.card-dashboard{
+    border:none;
+    border-radius:15px;
+    box-shadow:0px 5px 20px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.card-dashboard:hover{
+    transform:translateY(-5px);
+}
+
+.progress{
+    height:12px;
+    border-radius:20px;
+}
+
+.stat-number{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.activity-item{
+    border-bottom:1px solid #eee;
+    padding:10px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    .main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+}
+</style>
+
+<!-- ---------------- Sidebar ---------------- -->
+<div class="sidebar">
+    <h4>🛠 Admin Dashboard</h4>
+    <a href="{% url 'dashboard_admin' %}" class="active">Accueil</a>
+    <a href="{% url 'courses' %}">Gérer les cours</a>
+    <a href="{% url 'add_course' %}">Ajouter un cours</a>
+    <a href="{% url 'lesson_list' 1 %}">Gérer les leçons</a>
+    <!-- Sidebar -->
+    <a href="{% url 'manage_users' %}">Gérer les utilisateurs</a>
+    <a href="{% url 'certificates' %}">Certificats</a>
+    <a href="{% url 'progress' %}">Progression</a>
+    <a href="{% url 'recent_activity' %}">Activité récente</a>
+    <a href="{% url 'notifications' %}">Notifications</a>
+    <a href="{% url 'logout_view' %}">Déconnexion</a>
+</div>
+
+<!-- ---------------- Main content ---------------- -->
+<div class="main-content">
+<div class="container">
+
+<!-- HEADER -->
+<div class="mb-4">
+<h1 class="dashboard-title">🛠 Admin Dashboard</h1>
+<p class="text-muted">
+Bienvenue <strong>{{ user.username }}</strong> 👋  
+Gérez les cours, les leçons, les utilisateurs et suivez les statistiques globales.
+</p>
+</div>
+
+<!-- STATISTICS -->
+<div class="row mb-4">
+<div class="col-md-3">
+<div class="card card-dashboard text-center p-4">
+<h5>Total Courses</h5>
+<div class="stat-number text-primary">{{ courses_count }}</div>
+<p class="text-muted">Courses disponibles</p>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card card-dashboard text-center p-4">
+<h5>Total Lessons</h5>
+<div class="stat-number text-success">{{ lessons_count }}</div>
+<p class="text-muted">Leçons disponibles</p>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card card-dashboard text-center p-4">
+<h5>Total Users</h5>
+<div class="stat-number text-warning">{{ users_count }}</div>
+<p class="text-muted">Utilisateurs inscrits</p>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card card-dashboard text-center p-4">
+<h5>Active Enrollments</h5>
+<div class="stat-number text-danger">{{ enrollments_count }}</div>
+<p class="text-muted">Inscriptions en cours</p>
+</div>
+</div>
+</div>
+
+<!-- QUICK ACTIONS -->
+<h3 class="mb-3">⚡ Quick Actions</h3>
+<div class="row mb-5">
+<div class="col-md-3"><a href="{% url 'courses' %}" class="btn btn-primary w-100 p-3">📚 Manage Courses</a></div>
+<div class="col-md-3"><a href="{% url 'add_course' %}" class="btn btn-success w-100 p-3">➕ Add Course</a></div>
+<div class="col-md-3"><a href="{% url 'lesson_list' 1 %}" class="btn btn-warning w-100 p-3">📖 Manage Lessons</a></div>
+<div class="col-md-3"><a href="{% url 'manage_users' %}" class="btn btn-dark w-100 p-3">👥 Manage Users</a></div>
+</div>
+
+<!-- COURSES MANAGEMENT TABLE -->
+<h3 class="mt-5 mb-3">📚 Courses Management</h3>
+<div class="card card-dashboard p-4 mb-4">
+<table class="table table-striped">
+<thead>
+<tr>
+<th>ID</th>
+<th>Title</th>
+<th>Instructor</th>
+<th>Students Enrolled</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for course in courses %}
+<tr>
+<td>{{ course.id }}</td>
+<td>{{ course.title }}</td>
+<td>{{ course.instructor.username }}</td>
+<td>{{ course.enrollments.count }}</td>
+<td>
+<a href="{% url 'update_course' course.id %}" class="btn btn-warning btn-sm">Edit</a>
+<a href="{% url 'delete_course' course.id %}" class="btn btn-danger btn-sm">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- LESSONS MANAGEMENT -->
+<h3 class="mt-5 mb-3">📖 Lessons Management</h3>
+<div class="card card-dashboard p-4 mb-4">
+<table class="table table-striped">
+<thead>
+<tr>
+<th>ID</th>
+<th>Lesson Title</th>
+<th>Course</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for lesson in lessons %}
+<tr>
+<td>{{ lesson.id }}</td>
+<td>{{ lesson.title }}</td>
+<td>{{ lesson.course.title }}</td>
+<td>
+<a href="{% url 'update_lesson' lesson.id %}" class="btn btn-warning btn-sm">Edit</a>
+<a href="{% url 'delete_lesson' lesson.id %}" class="btn btn-danger btn-sm">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- RECENT ACTIVITIES -->
+<h3 class="mt-5 mb-3">📊 Recent Activities</h3>
+<div class="card card-dashboard p-4 mb-4">
+{% for activity in recent_activities %}
+<div class="activity-item">{{ activity }}</div>
+{% empty %}
+<div class="text-muted">No recent activity</div>
+{% endfor %}
+</div>
+
+<!-- NOTIFICATIONS -->
+<h3 class="mt-5 mb-3">🔔 Notifications</h3>
+<div class="card card-dashboard p-4 mb-4">
+<ul>
+<li>📢 New course requests</li>
+<li>📝 Lesson updates pending</li>
+<li>👥 New user registrations</li>
+<li>⚠ System alerts</li>
+</ul>
+</div>
+
+<!-- ADMIN TOOLS -->
+<h3 class="mt-5 mb-3">🛠 Admin Tools</h3>
+<div class="row mb-5">
+<div class="col-md-3"><a href="{% url 'manage_categories' %}" class="btn btn-outline-primary w-100 mb-2">Manage Categories</a></div>
+<div class="col-md-3"><a href="{% url 'upload_resources' %}" class="btn btn-outline-success w-100 mb-2">Upload Resources</a></div>
+<div class="col-md-3"><a href="{% url 'review_feedback' %}" class="btn btn-outline-warning w-100 mb-2">Review Feedback</a></div>
+<div class="col-md-3"><a href="{% url 'system_settings' %}" class="btn btn-outline-danger w-100 mb-2">System Settings</a></div>
+</div>
+
+<!-- MOTIVATION / REMINDER -->
+<div class="card card-dashboard mt-5 p-5 text-center">
+<h4>🚀 Keep Your Platform Up-to-Date!</h4>
+<p class="text-muted">
+Check courses, lessons, users, and progress regularly to keep learning smooth.
+</p>
+<a href="{% url 'courses' %}" class="btn btn-success btn-lg">Manage Courses Now</a>
+</div>
+
+</div> <!-- container -->
+</div> <!-- main-content -->
+
+{% endblock %}

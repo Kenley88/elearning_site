@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<h2>➕ Ajouter un cours</h2>
+
+<div class="card p-4 shadow">
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button type="submit" class="btn btn-success">
+Ajouter le cours
+</button>
+
+<a href="{% url 'courses' %}" class="btn btn-secondary">
+Retour
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+{% endblock %}

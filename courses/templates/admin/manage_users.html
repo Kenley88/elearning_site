@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+<h2>👥 Manage Users</h2>
+
+<p>Here the admin can manage all platform users.</p>
+
+<table class="table table-striped mt-4">
+<tr>
+<th>ID</th>
+<th>Username</th>
+<th>Email</th>
+<th>Actions</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>john</td>
+<td>john@email.com</td>
+<td>
+<button class="btn btn-warning btn-sm">Edit</button>
+<button class="btn btn-danger btn-sm">Delete</button>
+</td>
+</tr>
+
+</table>
+
+</div>
+
+{% endblock %}

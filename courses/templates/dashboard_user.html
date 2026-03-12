@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+/* Sidebar vertical */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 260px;
+    background-color: #343a40;
+    color: white;
+    padding-top: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar h4 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    color: white;
+    display: block;
+    padding: 12px 20px;
+    text-decoration: none;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+    text-decoration: none;
+}
+
+.sidebar .active {
+    background-color: #007bff;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 270px; /* width sidebar + spacing */
+    padding: 20px;
+}
+
+/* Dashboard styles existants */
+.dashboard-title{
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+.card-dashboard{
+    border:none;
+    border-radius:15px;
+    box-shadow:0px 5px 20px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.card-dashboard:hover{
+    transform:translateY(-5px);
+}
+
+.progress{
+    height:12px;
+    border-radius:20px;
+}
+
+.stat-number{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.badge-learning{
+    padding:10px 15px;
+    font-size:14px;
+    border-radius:20px;
+    margin:5px;
+}
+
+.activity-item{
+    border-bottom:1px solid #eee;
+    padding:10px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    .main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+}
+</style>
+
+<!-- ---------------- Sidebar ---------------- -->
+<div class="sidebar">
+    <h4>🎓 Dashboard</h4>
+    <a href="{% url 'dashboard_user' %}" class="active">Accueil</a>
+    <a href="{% url 'courses' %}">Cours</a>
+    <a href="{% url 'logout_view' %}">Déconnexion</a>
+</div>
+
+<!-- ---------------- Main content ---------------- -->
+<div class="main-content">
+
+<!-- ======================= Contenu existant ======================= -->
+<div class="container">
+
+<div class="mb-4">
+<h1 class="dashboard-title">🎓 Student Dashboard</h1>
+<p class="text-muted">
+Bienvenue <strong>{{ user.username }}</strong> 👋  
+Continue ton apprentissage et améliore tes compétences.
+</p>
+</div>
+
+<!-- STATISTICS -->
+<div class="row mb-4">
+<div class="col-md-3">
+<div class="card card-dashboard text-center p-4">
+<h5>Total Courses</h5>
+<div class="stat-number text-primary">{{ courses_count }}</div>
+<p class="text-muted">Courses disponibles</p>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card card-dashboard text-center p-4">
+<h5>My Courses</h5>
+<div class="stat-number text-success">{{ enrollments|length }}</div>
+<p class="text-muted">Courses inscrits</p>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card card-dashboard text-center p-4">
+<h5>Completed Lessons</h5>
+<div class="stat-number text-warning">{{ completed_lessons }}</div>
+<p class="text-muted">Leçons terminées</p>
+</div>
+</div>
+<div class="col-md-3">
+<div class="card card-dashboard text-center p-4">
+<h5>Progress</h5>
+<div class="stat-number text-danger">{{ progress_percent }}%</div>
+<p class="text-muted">Progression totale</p>
+</div>
+</div>
+</div>
+
+<!-- QUICK ACTIONS -->
+<h3 class="mb-3">⚡ Quick Actions</h3>
+<div class="row mb-5">
+<div class="col-md-3">
+<a href="{% url 'courses' %}" class="btn btn-success w-100 p-3">📚 Browse Courses</a>
+</div>
+<div class="col-md-3">
+<a href="#" class="btn btn-primary w-100 p-3">🎥 Continue Learning</a>
+</div>
+<div class="col-md-3">
+<a href="#" class="btn btn-warning w-100 p-3">🏆 My Certificates</a>
+</div>
+<div class="col-md-3">
+<a href="#" class="btn btn-dark w-100 p-3">⭐ My Progress</a>
+</div>
+</div>
+
+<!-- MY COURSES -->
+<h3 class="mb-3">📖 My Courses</h3>
+<div class="row">
+{% for enrollment in enrollments %}
+<div class="col-md-4 mb-4">
+<div class="card card-dashboard">
+<img src="{{ enrollment.course.image.url }}" class="card-img-top">
+<div class="card-body">
+<h5>{{ enrollment.course.title }}</h5>
+<p class="text-muted">{{ enrollment.course.description|truncatewords:15 }}</p>
+<div class="progress mb-2">
+<div class="progress-bar bg-success" style="width:{{ enrollment.progress }}%"></div>
+</div>
+<p class="text-muted">Progress: {{ enrollment.progress }}%</p>
+<a href="#" class="btn btn-primary btn-sm">Continue Learning</a>
+</div>
+</div>
+</div>
+{% empty %}
+<div class="alert alert-info">You have not enrolled in any course yet.</div>
+{% endfor %}
+</div>
+
+<!-- NEW COURSES -->
+<h3 class="mt-5 mb-3">🔥 New Courses</h3>
+<div class="row">
+{% for course in latest_courses %}
+<div class="col-md-3 mb-4">
+<div class="card card-dashboard">
+<img src="{{ course.image.url }}" class="card-img-top">
+<div class="card-body">
+<h6>{{ course.title }}</h6>
+<p class="text-muted">{{ course.description|truncatewords:10 }}</p>
+<a href="{% url 'courses' %}" class="btn btn-outline-primary btn-sm">View Course</a>
+<a href="{% url 'enroll_course' course.id %}" class="btn btn-success btn-sm w-100 mt-1">Enroll Now</a>
+</div>
+</div>
+</div>
+{% endfor %}
+</div>
+
+<!-- ACHIEVEMENTS -->
+<h3 class="mt-5 mb-3">🏅 Achievements & Badges</h3>
+<div class="card card-dashboard p-4">
+<span class="badge bg-success badge-learning">Beginner Learner</span>
+<span class="badge bg-primary badge-learning">First Course Completed</span>
+<span class="badge bg-warning badge-learning">Active Student</span>
+<span class="badge bg-danger badge-learning">Learning Champion</span>
+<span class="badge bg-info badge-learning">Code Master</span>
+<span class="badge bg-secondary badge-learning">Project Finisher</span>
+</div>
+
+<!-- RECENT ACTIVITY -->
+<h3 class="mt-5 mb-3">📊 Recent Activity</h3>
+<div class="card card-dashboard p-4">
+<div class="activity-item">📚 You enrolled in a new course.</div>
+<div class="activity-item">🎥 You completed a lesson.</div>
+<div class="activity-item">⭐ You rated a course.</div>
+<div class="activity-item">🏆 You earned a certificate.</div>
+<div class="activity-item">💬 You posted a comment in the forum.</div>
+<div class="activity-item">📝 You submitted an exercise.</div>
+</div>
+
+<!-- LEARNING CALENDAR -->
+<h3 class="mt-5 mb-3">📅 Learning Calendar</h3>
+<div class="card card-dashboard p-4 mb-4">
+<div class="row">
+<div class="col-md-3 mb-2"><button class="btn btn-outline-primary w-100">Monday Study Plan</button></div>
+<div class="col-md-3 mb-2"><button class="btn btn-outline-primary w-100">Tuesday Practice</button></div>
+<div class="col-md-3 mb-2"><button class="btn btn-outline-primary w-100">Wednesday Projects</button></div>
+<div class="col-md-3 mb-2"><button class="btn btn-outline-primary w-100">Weekend Revision</button></div>
+</div>
+</div>
+
+<!-- RESOURCE CENTER -->
+<h3 class="mt-5 mb-3">🛠 Learning Resources</h3>
+<div class="row mb-4">
+<div class="col-md-3"><a href="{% url 'download_pdfs' %}" class="btn btn-info w-100 mb-2">📄 Download PDFs</a></div>
+<div class="col-md-3"><a href="{% url 'watch_tutorials' %}" class="btn btn-warning w-100 mb-2">🎥 Watch Tutorials</a></div>
+<div class="col-md-3"><a href="{% url 'practice_exercises' %}" class="btn btn-success w-100 mb-2">🧠 Practice Exercises</a></div>
+<div class="col-md-3"><a href="{% url 'study_guides' %}" class="btn btn-dark w-100 mb-2">📘 Study Guides</a></div>
+</div>
+
+<!-- COMMUNITY -->
+<h3 class="mt-5 mb-3">👨‍🎓 Student Community</h3>
+<div class="row mb-4">
+<div class="col-md-4"><a href="{% url 'discussion_forum' %}" class="btn btn-primary w-100 mb-2">💬 Discussion Forum</a></div>
+<div class="col-md-4"><a href="{% url 'study_groups' %}" class="btn btn-success w-100 mb-2">👥 Study Groups</a></div>
+<div class="col-md-4"><a href="{% url 'learning_challenges' %}" class="btn btn-danger w-100 mb-2">🎯 Learning Challenges</a></div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<h3 class="mt-5 mb-3">🔔 Notifications</h3>
+<div class="card card-dashboard p-4 mb-4">
+<ul>
+<li>📢 New course available this week.</li>
+<li>🎓 You completed a lesson successfully.</li>
+<li>⭐ Your course rating was submitted.</li>
+<li>🏆 You earned a new learning badge.</li>
+<li>📌 Reminder: Finish your assignments!</li>
+<li>🗓 Upcoming webinar tomorrow.</li>
+</ul>
+</div>
+
+<!-- LEARNING GOALS -->
+<h3 class="mt-5 mb-3">🎯 Learning Goals</h3>
+<div class="card card-dashboard p-4 mb-4">
+<div class="progress mb-3"><div class="progress-bar bg-success" style="width:40%">40% Completed</div></div>
+<div class="row">
+<div class="col-md-4"><button class="btn btn-outline-success w-100">Finish 5 Courses</button></div>
+<div class="col-md-4"><button class="btn btn-outline-primary w-100">Practice Coding</button></div>
+<div class="col-md-4"><button class="btn btn-outline-warning w-100">Earn Certificates</button></div>
+</div>
+</div>
+
+<!-- SUPPORT CENTER -->
+<h3 class="mt-5 mb-3">🛠 Support Center</h3>
+<div class="row mb-4">
+<div class="col-md-3"><a href="{% url 'help_center' %}" class="btn btn-outline-dark w-100 mb-2">Help Center</a></div>
+<div class="col-md-3"><a href="{% url 'report_issue' %}" class="btn btn-outline-danger w-100 mb-2">Report Issue</a></div>
+<div class="col-md-3"><a href="{% url 'contact_support' %}" class="btn btn-outline-primary w-100 mb-2">Contact Support</a></div>
+<div class="col-md-3"><a href="{% url 'faq' %}" class="btn btn-outline-success w-100 mb-2">FAQ</a></div>
+</div>
+
+<!-- ACCOUNT SETTINGS -->
+<h3 class="mt-5 mb-3">⚙ Account Settings</h3>
+<div class="row mb-5">
+<div class="col-md-4"><a href="{% url 'edit_profile' %}" class="btn btn-outline-primary w-100 mb-2">Edit Profile</a></div>
+<div class="col-md-4"><a href="{% url 'change_password' %}" class="btn btn-outline-warning w-100 mb-2">Change Password</a></div>
+<div class="col-md-4"><a href="{% url 'logout_view' %}" class="btn btn-outline-danger w-100 mb-2">Logout</a></div>
+</div>
+
+<!-- MOTIVATION -->
+<div class="card card-dashboard mt-5 p-5 text-center">
+<h4>🚀 Keep Learning!</h4>
+<p class="text-muted">
+Learning every day improves your future.  
+Discover new courses and keep improving your skills.
+</p>
+<a href="{% url 'courses' %}" class="btn btn-success btn-lg">Explore More Courses</a>
+</div>
+
+</div> <!-- container -->
+</div> <!-- main-content -->
+
+{% endblock %}

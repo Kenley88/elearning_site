@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+.lesson-container{
+display:flex;
+gap:20px;
+}
+
+/* sidebar lessons */
+.lesson-sidebar{
+width:300px;
+background:#f8f9fa;
+padding:20px;
+border-radius:10px;
+height:500px;
+overflow-y:auto;
+}
+
+.lesson-sidebar a{
+display:block;
+padding:10px;
+border-bottom:1px solid #ddd;
+text-decoration:none;
+color:black;
+}
+
+.lesson-sidebar a:hover{
+background:#e9ecef;
+}
+
+/* lesson content */
+.lesson-content{
+flex:1;
+}
+
+.video-container{
+width:100%;
+margin-bottom:20px;
+}
+
+.video-container iframe{
+width:100%;
+height:400px;
+border-radius:10px;
+}
+
+.next-btn{
+margin-top:20px;
+}
+
+</style>
+
+
+<div class="container mt-5">
+
+<div class="lesson-container">
+
+<!-- LEFT LESSON LIST -->
+<div class="lesson-sidebar">
+
+<h4>📚 Lessons</h4>
+
+{% for l in lessons %}
+
+<a href="{% url 'lesson_detail' l.id %}">
+{{ l.title }}
+</a>
+
+{% endfor %}
+
+</div>
+
+
+<!-- RIGHT LESSON CONTENT -->
+<div class="lesson-content">
+
+<h2>{{ lesson.title }}</h2>
+
+<!-- VIDEO -->
+<div class="video-container">
+
+<iframe
+src="{{ lesson.video }}"
+frameborder="0"
+allowfullscreen>
+</iframe>
+
+</div>
+
+<!-- DESCRIPTION -->
+<div class="lesson-description">
+
+<h4>📄 Description</h4>
+
+<p>
+{{ lesson.content }}
+</p>
+
+</div>
+
+
+<!-- NEXT LESSON BUTTON -->
+{% if next_lesson %}
+
+<div class="next-btn">
+
+<a href="{% url 'lesson_detail' next_lesson.id %}"
+class="btn btn-primary">
+
+Next Lesson ➡️
+
+</a>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>🕒 Activité récente</h1>
+
+<ul class="list-group">
+  {% for activity in recent_activities %}
+  <li class="list-group-item">
+    <strong>{{ activity.user.username }}</strong> 
+    {{ activity.action }} 
+    <span class="text-muted">({{ activity.timestamp|date:"M d, Y H:i" }})</span>
+  </li>
+  {% empty %}
+  <li class="list-group-item text-center">Aucune activité récente</li>
+  {% endfor %}
+</ul>
+{% endblock %}

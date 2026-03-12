@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>🔔 Notifications</h2>
+    <ul class="list-group mt-3">
+        {% for notification in notifications %}
+        <li class="list-group-item">{{ notification.message }}</li>
+        {% empty %}
+        <li class="list-group-item text-muted">Aucune notification pour le moment.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

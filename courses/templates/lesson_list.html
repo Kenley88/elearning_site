@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<h2>📖 Leçons : {{ course.title }}</h2>
+
+{% if user.is_superuser %}
+<a href="{% url 'add_lesson' %}" class="btn btn-success mb-3">Ajouter une leçon</a>
+{% endif %}
+
+<div class="list-group">
+
+{% for lesson in lessons %}
+<div class="list-group-item d-flex justify-content-between align-items-center">
+
+<div>
+<h5>{{ lesson.title }}</h5>
+<p>{{ lesson.content|truncatewords:20 }}</p>
+</div>
+
+<div>
+{% if lesson.video %}
+<a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-primary btn-sm" target="_blank">Voir Vidéo</a>
+{% endif %}
+
+{% if user.is_superuser %}
+<a href="{% url 'update_lesson' lesson.id %}" class="btn btn-warning btn-sm">Modifier</a>
+<a href="{% url 'delete_lesson' lesson.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+{% endif %}
+</div>
+
+</div>
+{% empty %}
+<div class="alert alert-info">Aucune leçon disponible pour ce cours.</div>
+{% endfor %}
+
+</div>
+
+</div>
+
+{% endblock %}

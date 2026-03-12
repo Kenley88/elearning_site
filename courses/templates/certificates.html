@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>🎓 Certificats</h2>
+    <p>Liste des certificats délivrés aux utilisateurs.</p>
+
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Utilisateur</th>
+                <th>Cours</th>
+                <th>Date de délivrance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for certificate in certificates %}
+            <tr>
+                <td>{{ certificate.id }}</td>
+                <td>{{ certificate.user.username }}</td>
+                <td>{{ certificate.course.title }}</td>
+                <td>{{ certificate.created_at }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-muted">Aucun certificat trouvé.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

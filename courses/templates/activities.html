@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>📝 Activité récente</h2>
+    <ul class="list-group mt-3">
+        {% for activity in recent_activities %}
+        <li class="list-group-item">{{ activity }}</li>
+        {% empty %}
+        <li class="list-group-item text-muted">Aucune activité récente.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

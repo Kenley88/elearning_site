@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>📊 Progression des utilisateurs</h2>
+    <p>Suivi de la progression des utilisateurs sur les cours.</p>
+
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Utilisateur</th>
+                <th>Cours</th>
+                <th>Leçons complétées</th>
+                <th>Pourcentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for progress in progresses %}
+            <tr>
+                <td>{{ progress.user.username }}</td>
+                <td>{{ progress.course.title }}</td>
+                <td>{{ progress.completed_lessons }}</td>
+                <td>{{ progress.percent_completed }}%</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-muted">Aucune progression enregistrée.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

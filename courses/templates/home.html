@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="text-center mb-5">
+
+<h1>Plateforme E-learning</h1>
+<p>Apprenez en ligne avec les meilleurs cours</p>
+
+</div>
+
+<div class="row">
+
+{% for course in courses %}
+
+<div class="col-md-4">
+
+<div class="card mb-4">
+
+<img src="{{ course.image.url }}" class="card-img-top">
+
+<div class="card-body">
+
+<h5>{{ course.title }}</h5>
+
+<p>{{ course.description|truncatewords:15 }}</p>
+
+<a href="{% url 'courses' %}" class="btn btn-primary">Voir le cours</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

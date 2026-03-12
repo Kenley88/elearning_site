@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+.page-title{
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.course-card{
+border:none;
+border-radius:15px;
+box-shadow:0px 5px 20px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.course-card:hover{
+transform:translateY(-5px);
+}
+
+.course-img{
+height:200px;
+object-fit:cover;
+}
+
+.search-box{
+border-radius:10px;
+}
+
+</style>
+
+<div class="container">
+
+<!-- HEADER -->
+
+<div class="mb-4">
+
+<h2 class="page-title">📚 Explore Courses</h2>
+
+<p class="text-muted">
+Découvrez de nouveaux cours et améliorez vos compétences.
+</p>
+
+</div>
+
+
+<!-- ADMIN BUTTON -->
+
+{% if user.is_superuser %}
+
+<a href="{% url 'add_course' %}" class="btn btn-success mb-4">
+➕ Add New Course
+</a>
+
+{% endif %}
+
+
+<!-- SEARCH BAR -->
+
+<div class="card p-4 mb-4">
+
+<form method="GET">
+
+<div class="row">
+
+<div class="col-md-8">
+
+<input type="text"
+name="q"
+value="{{ request.GET.q }}"
+placeholder="🔎 Search courses..."
+class="form-control search-box">
+
+</div>
+
+<div class="col-md-2">
+
+<button class="btn btn-primary w-100">
+Search
+</button>
+
+</div>
+
+<div class="col-md-2">
+
+<a href="{% url 'courses' %}" class="btn btn-secondary w-100">
+Reset
+</a>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+
+<!-- COURSE STATISTICS -->
+
+<div class="row mb-4">
+
+<div class="col-md-3">
+
+<div class="card text-center p-3">
+
+<h5>Total Courses</h5>
+
+<h3>{{ courses.paginator.count }}</h3>
+
+</div>
+
+</div>
+
+
+<div class="col-md-3">
+
+<div class="card text-center p-3">
+
+<h5>Categories</h5>
+
+<h3>12</h3>
+
+</div>
+
+</div>
+
+
+<div class="col-md-3">
+
+<div class="card text-center p-3">
+
+<h5>Students</h5>
+
+<h3>150+</h3>
+
+</div>
+
+</div>
+
+
+<div class="col-md-3">
+
+<div class="card text-center p-3">
+
+<h5>Certificates</h5>
+
+<h3>80+</h3>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- COURSE GRID -->
+
+<div class="row">
+
+{% for course in courses %}
+
+<div class="col-md-4 mb-4">
+
+<div class="card course-card">
+
+
+<div class="card-body">
+
+<h5 class="card-title">
+{{ course.title }}
+</h5>
+
+<p class="text-muted">
+{{ course.description|truncatewords:20 }}
+</p>
+
+
+<!-- ACTION BUTTONS -->
+
+<a href="{% url 'enroll_course' course.id %}" class="btn btn-primary btn-sm">
+Enroll
+</a>
+
+<a href="#" class="btn btn-success btn-sm">
+View Lessons
+</a>
+
+<a href="#" class="btn btn-info btn-sm">
+Details
+</a>
+
+
+{% if user.is_superuser %}
+
+<hr>
+
+<a href="{% url 'update_course' course.id %}" class="btn btn-warning btn-sm">
+Edit
+</a>
+
+<a href="{% url 'delete_course' course.id %}" class="btn btn-danger btn-sm">
+Delete
+</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<div class="col-12">
+
+<div class="alert alert-info">
+No courses found.
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+
+<!-- PAGINATION -->
+
+<div class="mt-4 text-center">
+
+{% if courses.has_previous %}
+
+<a href="?page={{courses.previous_page_number}}&q={{request.GET.q}}"
+class="btn btn-outline-primary btn-sm">
+⬅ Previous
+</a>
+
+{% endif %}
+
+<span class="mx-3">
+Page {{courses.number}} / {{courses.paginator.num_pages}}
+</span>
+
+{% if courses.has_next %}
+
+<a href="?page={{courses.next_page_number}}&q={{request.GET.q}}"
+class="btn btn-outline-primary btn-sm">
+Next ➡
+</a>
+
+{% endif %}
+
+</div>
+
+
+
+<!-- RECOMMENDED COURSES -->
+
+<hr class="my-5">
+
+<h3 class="mb-3">🔥 Recommended Courses</h3>
+
+<div class="row">
+
+{% for course in courses|slice:":3" %}
+
+<div class="col-md-4">
+
+<div class="card course-card">
+
+<div class="card-body">
+
+<h6>{{ course.title }}</h6>
+
+<a href="{% url 'enroll_course' course.id %}" class="btn btn-success btn-sm w-100">
+Enroll Now
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+
+<!-- CALL TO ACTION -->
+
+<div class="card mt-5 p-5 text-center">
+
+<h4>🚀 Continue Learning</h4>
+
+<p class="text-muted">
+Explore more courses and become an expert in your field.
+</p>
+
+<a href="{% url 'courses' %}" class="btn btn-success btn-lg">
+Browse More Courses
+</a>
+
+</div>
+
+
+</div>
+
+
+<div class="container mt-5">
+
+<h3 class="mb-4">📚 Liste des cours disponibles</h3>
+
+<div class="row">
+
+{% for course in courses %}
+
+<div class="col-md-4 mb-4">
+
+<div class="card shadow">
+
+
+<div class="card-body">
+
+<h5 class="card-title">{{ course.title }}</h5>
+
+<p class="card-text">
+{{ course.description|truncatewords:20 }}
+</p>
+
+<p class="text-muted">
+📅 Date : {{ course.created_at }}
+</p>
+
+<div class="d-grid gap-2">
+
+<a href="{% url 'enroll_course' course.id %}" class="btn btn-primary">
+S'inscrire au cours
+</a>
+
+<a href="#" class="btn btn-outline-success">
+Voir les leçons
+</a>
+
+<a href="#" class="btn btn-outline-info">
+Voir les détails
+</a>
+
+</div>
+
+{% if user.is_superuser %}
+
+<hr>
+
+<a href="{% url 'update_course' course.id %}" class="btn btn-warning btn-sm">
+Modifier
+</a>
+
+<a href="{% url 'delete_course' course.id %}" class="btn btn-danger btn-sm">
+Supprimer
+</a>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<div class="col-12">
+
+<div class="alert alert-info">
+
+Aucun cours disponible pour le moment.
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+{% endblock %}
