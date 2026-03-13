@@ -11,7 +11,12 @@ from django.contrib.auth.models import User  # modèle utilisateur
 from django.core.mail import send_mail, BadHeaderError  # envoyer email
 from django.contrib import messages  # messages de notification
 from django.conf import settings  # accéder aux settings
+from .forms import ProfileUpdateForm  # formulaire à créer
+from .models import ForumPost  # ou ton modèle de posts
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
+from .models import Challenge
 # Import modèles
 from .models import (
     Course, Enrollment, Lesson, Progress, Certificate,
@@ -46,6 +51,9 @@ def home(request):
     return render(request, 'home.html', {'courses': courses})
 
 
+def home_view(request):
+    return render(request, 'home.html')
+
 # ==============================
 # CONTEXT PROCESSOR
 # ==============================
@@ -56,6 +64,24 @@ def register_form(request):
     return {
         'register_form': RegisterForm()
     }
+
+
+
+
+def discussion_forum(request):
+    forum_posts = ForumPost.objects.all().order_by('-created_at')
+    return render(request, 'discussion_forum.html', {'forum_posts': forum_posts})
+
+
+def forum_post_detail(request, post_id):
+    post = get_object_or_404(ForumPost, id=post_id)
+    comments = post.comments.all().order_by('created_at')
+    return render(request, 'forum_post_detail.html', {
+        'post': post,
+        'comments': comments
+    })
+
+
 
 
 # ==============================
@@ -101,6 +127,26 @@ def login_view(request):
             return redirect('login_view')
     else:
         return render(request, 'login.html')
+
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Met à jour la session pour ne pas déconnecter l'utilisateur
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Votre mot de passe a été modifié avec succès !')
+            return redirect('profile')  # Redirige vers la page de profil ou autre
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    return render(request, 'change_password.html', {'form': form})
+
 
 
 # ==============================
@@ -161,6 +207,9 @@ def dashboard(request):
 # AJOUTER UTILISATEUR
 # ==============================
 
+
+@login_required
+@user_passes_test(is_admin)
 def add_user(request):
     """
     Page pour ajouter un utilisateur.
@@ -175,6 +224,9 @@ def add_user(request):
 # MODIFIER UTILISATEUR
 # ==============================
 
+
+@login_required
+@user_passes_test(is_admin)
 def edit_user(request, user_id):
     """
     Page pour modifier un utilisateur.
@@ -197,7 +249,8 @@ def users_list(request):
     users = User.objects.all()
     return render(request, 'users_list.html', {'users': users})
 
-
+@login_required
+@user_passes_test(is_admin)
 def delete_user(request, user_id):
     from django.contrib.auth.models import User
     user = User.objects.get(id=user_id)
@@ -361,6 +414,9 @@ def complete_lesson(request, id):
 # AJOUTER LESSON
 # ==============================
 
+
+@login_required
+@user_passes_test(is_admin)
 def add_lesson(request):
 
     if request.method == "POST":
@@ -510,9 +566,21 @@ def lesson_detail(request, id):
 # ADMIN DASHBOARD
 # ==============================
 
+@login_required
+@user_passes_test(is_admin)
 def dashboard_admin(request):
 
-    return render(request, 'dashboard_admin.html')
+    courses_count = Course.objects.count()
+    users_count = User.objects.count()
+    lessons_count = Lesson.objects.count()
+
+    context = {
+        'courses_count': courses_count,
+        'users_count': users_count,
+        'lessons_count': lessons_count
+    }
+
+    return render(request, 'dashboard_admin.html', context)
 
 
 def manage_users(request):
@@ -681,3 +749,33 @@ def edit_profile(request):
 
 def change_password(request):
     return render(request, 'change_password.html')
+
+
+
+
+
+def active_challenge(request):
+    # Récupère tous les défis actifs
+    challenges = Challenge.objects.filter(is_active=True)
+    return render(request, 'active_challenges.html', {'challenges': challenges})
+
+
+
+@login_required
+def profile_view(request):
+    user = request.user
+
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user.profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Votre profil a été mis à jour avec succès !")
+            return redirect('profile')
+    else:
+        form = ProfileUpdateForm(instance=user.profile)
+
+    context = {
+        'form': form,
+        'user': user,
+    }
+    return render(request, 'profile.html', context)
