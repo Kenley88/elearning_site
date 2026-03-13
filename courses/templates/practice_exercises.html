@@ -1,7 +1,130 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>🧠 Practice Exercises</h2>
-    <p>Testez vos compétences avec des exercices pratiques.</p>
-</div>
+<style>
+/* Wrapper principal pour alignement proche du dashboard */
+.page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h2 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.header p {
+    color: #555;
+    font-size: 14px;
+}
+
+/* Exercise Card */
+.exercise-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    text-align: left;
+}
+
+.exercise-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Buttons */
+.btn-exercise {
+    margin-top: 10px;
+    width: 100%;
+    font-size: 14px;
+}
+
+/* Badge difficulty */
+.badge-level {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin-right: 5px;
+}
+
+/* Responsive */
+@media (max-width: 768px){
+    .exercise-card { padding: 15px; }
+    .header h2 { font-size: 24px; }
+    .btn-exercise { font-size: 12px; }
+}
+
+@media (max-width: 576px){
+    .header h2 { font-size: 22px; }
+    .exercise-card { padding: 10px; }
+    .btn-exercise { font-size: 11px; }
+}
+</style>
+
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>🧠 Practice Exercises</h2>
+        <p>Testez vos compétences avec des exercices pratiques et améliorez votre apprentissage.</p>
+    </div>
+
+    <!-- Exercise Categories -->
+    <h4 class="mb-3">📂 Categories</h4>
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3"><span class="badge bg-primary badge-level">Python</span></div>
+        <div class="col-md-3 col-sm-6 mb-3"><span class="badge bg-success badge-level">JavaScript</span></div>
+        <div class="col-md-3 col-sm-6 mb-3"><span class="badge bg-warning text-dark badge-level">HTML/CSS</span></div>
+        <div class="col-md-3 col-sm-6 mb-3"><span class="badge bg-danger badge-level">Django</span></div>
+    </div>
+
+    <!-- Exercises Grid -->
+    <h4 class="mb-3">📝 Exercises List</h4>
+    <div class="row">
+        {% for exercise in exercises %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="exercise-card">
+                <h5>{{ exercise.title }}</h5>
+                <p class="text-muted">{{ exercise.description|truncatewords:20 }}</p>
+                <p>
+                    <span class="badge bg-primary badge-level">{{ exercise.category }}</span>
+                    <span class="badge bg-success badge-level">{{ exercise.level }}</span>
+                </p>
+                <a href="{% url 'start_exercise' exercise.id %}" class="btn btn-primary btn-exercise">Start Exercise</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Aucun exercice disponible pour l’instant.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- More Exercises -->
+    <h4 class="mt-5 mb-3">💡 Suggested Challenges</h4>
+    <div class="row">
+        {% for suggestion in suggested_exercises %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="exercise-card">
+                <h5>{{ suggestion.title }}</h5>
+                <p class="text-muted">{{ suggestion.description|truncatewords:15 }}</p>
+                <p>
+                    <span class="badge bg-info badge-level">{{ suggestion.category }}</span>
+                    <span class="badge bg-warning text-dark badge-level">{{ suggestion.level }}</span>
+                </p>
+                <a href="{% url 'start_exercise' suggestion.id %}" class="btn btn-success btn-exercise">Try This Challenge</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div> <!-- page-wrapper -->
 {% endblock %}
