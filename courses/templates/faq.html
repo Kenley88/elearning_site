@@ -1,7 +1,135 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>❓ FAQ</h2>
-    <p>Consultez les questions fréquentes et leurs réponses.</p>
+<style>
+/* Wrapper principal pour alignement proche du dashboard */
+.page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.header p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Card FAQ / Quiz */
+.card-faq, .card-quiz {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    text-align: left; /* contenu aligné à gauche */
+}
+
+.card-faq:hover, .card-quiz:hover {
+    transform: translateY(-5px);
+}
+
+/* Quiz options */
+.quiz-option {
+    display: block;
+    margin: 8px 0;
+}
+
+.btn-quiz {
+    margin-top: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px){
+    .header h2 { font-size: 24px; }
+    .card-faq, .card-quiz { padding: 15px; }
+    .btn-quiz { font-size: 12px; padding: 8px; }
+}
+
+@media (max-width: 576px){
+    .header h2 { font-size: 22px; }
+}
+</style>
+
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="header text-center">
+        <h2>❓ FAQ & Quizzes</h2>
+        <p>Consultez les questions fréquentes et testez vos connaissances avec des quiz interactifs.</p>
+    </div>
+
+    <!-- FAQ Section -->
+    <h4 class="mb-3">📚 Frequently Asked Questions</h4>
+    <div class="row">
+        {% for faq in faqs %}
+        <div class="col-md-6 mb-4">
+            <div class="card card-faq">
+                <h5>{{ faq.question }}</h5>
+                <p>{{ faq.answer }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Aucune question disponible pour l’instant.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Quiz Section -->
+    <h4 class="mt-5 mb-3">📝 Quizzes</h4>
+    <div class="row">
+        {% for quiz in quizzes %}
+        <div class="col-md-6 col-sm-12 mb-4">
+            <div class="card card-quiz">
+                <h5>{{ quiz.title }}</h5>
+                <p class="text-muted">{{ quiz.description|truncatewords:20 }}</p>
+                <form method="POST" action="{% url 'submit_quiz' quiz.id %}">
+                    {% csrf_token %}
+                    {% for question in quiz.questions %}
+                    <div class="mb-3">
+                        <strong>{{ forloop.counter }}. {{ question.text }}</strong>
+                        {% for option in question.options %}
+                        <label class="quiz-option">
+                            <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}"> {{ option.text }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-success btn-quiz w-100">Submit Quiz</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Aucun quiz disponible pour l’instant.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Suggested Quizzes -->
+    <h4 class="mt-5 mb-3">💡 Suggested Quizzes</h4>
+    <div class="row">
+        {% for quiz in suggested_quizzes %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card card-quiz">
+                <h5>{{ quiz.title }}</h5>
+                <p>{{ quiz.description|truncatewords:15 }}</p>
+                <a href="{% url 'take_quiz' quiz.id %}" class="btn btn-primary btn-quiz w-100">Take Quiz</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
 {% endblock %}
