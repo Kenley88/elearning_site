@@ -1,7 +1,29 @@
 {% extends 'base.html' %}
+
 {% block content %}
+
 <div class="container mt-5">
-    <h2>🏆 My Certificates</h2>
-    <p>Vos certificats obtenus apparaîtront ici.</p>
+<h2>➕ Ajouter/Modifier une Leçon</h2>
+
+<div class="card p-4 shadow">
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button type="submit" class="btn btn-success">
+Enregistrer la leçon
+</button>
+
+<a href="{% url 'courses' %}" class="btn btn-secondary">
+Retour
+</a>
+
+</form>
+
 </div>
+</div>
+
 {% endblock %}
