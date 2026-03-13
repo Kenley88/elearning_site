@@ -1,7 +1,169 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>⭐ My Progress</h2>
-    <p>Visualisez votre progression globale et vos leçons terminées.</p>
+<style>
+/* Layout sans sidebar */
+.page-wrapper {
+    max-width: 1100px;   /* largeur maximale du contenu */
+    margin: 0 auto;      /* centrer sur la page */
+    padding: 20px;
+}
+
+/* Header */
+.header h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.header p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Progress Cards */
+.progress-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+}
+
+.progress-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Progress bar */
+.progress {
+    height: 15px;
+    border-radius: 20px;
+    background-color: #eee;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+/* Stat Numbers */
+.stat-number {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Badges */
+.badge-progress {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+    margin: 5px;
+}
+
+/* Table for Lessons */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+/* Responsive */
+@media (max-width: 576px){
+    .header h2 { font-size: 24px; }
+    .progress-card { padding: 15px; }
+    .stat-number { font-size: 20px; }
+    .badge-progress { font-size: 10px; padding: 6px 10px; }
+}
+</style>
+
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>⭐ My Progress</h2>
+        <p>Visualisez votre progression globale et vos leçons terminées.</p>
+    </div>
+
+    <!-- Overall Progress -->
+    <div class="progress-card">
+        <h5>Global Progress</h5>
+        <div class="stat-number text-primary">{{ overall_progress }}%</div>
+        <div class="progress mb-3">
+            <div class="progress-bar bg-success" style="width: {{ overall_progress }}%"></div>
+        </div>
+        <p class="text-muted">Total des cours complétés et en cours</p>
+    </div>
+
+    <!-- Courses Progress -->
+    <h4 class="mt-4 mb-3">📚 Courses Progress</h4>
+    <div class="row">
+        {% for enrollment in enrollments %}
+        <div class="col-md-6 mb-4">
+            <div class="progress-card text-start">
+                <h5>{{ enrollment.course.title }}</h5>
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-warning" style="width: {{ enrollment.progress }}%"></div>
+                </div>
+                <p class="text-muted">Progression: {{ enrollment.progress }}%</p>
+                {% if enrollment.completed %}
+                <span class="badge bg-success badge-progress">Completed</span>
+                {% else %}
+                <span class="badge bg-info badge-progress">In Progress</span>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Vous n’avez encore aucun cours en cours.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Lessons Completed -->
+    <h4 class="mt-4 mb-3">📖 Completed Lessons</h4>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Lesson</th>
+                    <th>Course</th>
+                    <th>Date Completed</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lesson in completed_lessons %}
+                <tr>
+                    <td>{{ lesson.title }}</td>
+                    <td>{{ lesson.course.title }}</td>
+                    <td>{{ lesson.date_completed|date:"d M Y" }}</td>
+                    <td><span class="badge bg-success">Completed</span></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted">Aucune leçon terminée pour l’instant.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Achievements / Badges -->
+    <h4 class="mt-4 mb-3">🏅 Achievements & Badges</h4>
+    <div class="progress-card">
+        {% for badge in badges %}
+        <span class="badge bg-primary badge-progress">{{ badge.name }}</span>
+        {% empty %}
+        <div class="text-muted">Vous n’avez encore aucun badge.</div>
+        {% endfor %}
+    </div>
+
 </div>
 {% endblock %}
