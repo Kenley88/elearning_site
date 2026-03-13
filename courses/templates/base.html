@@ -35,15 +35,84 @@ main { flex:1; }
     .main-content { margin-left:0; padding-top:140px; }
     nav.navbar { margin-left:0; }
 }
+
+.sidebar a{
+padding:10px;
+border-radius:6px;
+transition:0.2s;
+}
+
+.sidebar a:hover{
+background:#495057;
+}
+
+.sidebar a.active{
+background:#0d6efd;
+}
+
+
 </style>
 </head>
 
 <body>
 
+  <!-- ---------------- Sidebar Dashboard ---------------- -->
+
+<div class="sidebar bg-dark text-white position-fixed" 
+     style="width:260px;height:100vh;top:0;left:0;padding-top:70px;z-index:1000;">
+
+<div class="p-3">
+
+<h5 class="text-center mb-4">Dashboard</h5>
+
+<a href="{% url 'dashboard_user' %}" class="d-block text-white mb-2 text-decoration-none">
+<i class="bi bi-speedometer2"></i> Dashboard
+</a>
+
+<a href="{% url 'courses' %}" 
+class="d-block text-white mb-2 text-decoration-none
+{% if request.path == '/courses/' %}active{% endif %}">
+<i class="bi bi-book"></i> Courses
+</a>
+
+<a href="{% url 'browse_courses' %}" class="d-block text-white mb-2 text-decoration-none">
+<i class="bi bi-grid"></i> Browse Courses
+</a>
+
+<a href="{% url 'continue_learning' %}" class="d-block text-white mb-2 text-decoration-none">
+<i class="bi bi-play-circle"></i> Continue Learning
+</a>
+
+<a href="{% url 'my_progress' %}" class="d-block text-white mb-2 text-decoration-none">
+<i class="bi bi-bar-chart"></i> My Progress
+</a>
+
+<a href="{% url 'my_certificates' %}" class="d-block text-white mb-2 text-decoration-none">
+<i class="bi bi-award"></i> Certificates
+</a>
+
+<hr>
+
+{% if request.user.is_superuser %}
+
+<h6 class="text-warning">Admin</h6>
+
+<a href="{% url 'add_course' %}" class="d-block text-white mb-2 text-decoration-none">
+<i class="bi bi-plus-circle"></i> Add Course
+</a>
+
+<a href="{% url 'manage_users' %}" class="d-block text-white mb-2 text-decoration-none">
+<i class="bi bi-people"></i> Manage Users
+</a>
+
+{% endif %}
+
+</div>
+</div>
+
 <!-- ---------------- Navbar ---------------- -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style="z-index:1100; margin-left:260px;">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'dashboard_user' %}">EduPlatform</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" 
+style="z-index:1100; margin-left:260px; height:70px;">    <a class="navbar-brand" href="{% url 'dashboard_user' %}">EduPlatform</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
