@@ -1,44 +1,132 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+/* Container centré */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
 
-<div class="container mt-5">
+/* Header */
+.header h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
 
-<h2>📤 Upload Resources</h2>
+.header p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
 
-<form method="POST" enctype="multipart/form-data">
-{% csrf_token %}
-{{ form.as_p }}
+/* Resource Card */
+.resource-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-<button class="btn btn-success">Upload</button>
-</form>
+.resource-card:hover {
+    transform: translateY(-5px);
+}
 
-<hr>
+/* Buttons */
+.btn-resource {
+    margin-top: 10px;
+    font-size: 14px;
+}
 
-<h4>Uploaded Resources</h4>
+/* Table styles */
+.table thead th {
+    background-color: #007bff;
+    color: #fff;
+}
 
-<table class="table table-striped">
+.table tbody td a {
+    color: #fff;
+    background-color: #28a745;
+    padding: 5px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+}
 
-<tr>
-<th>ID</th>
-<th>Title</th>
-<th>File</th>
-</tr>
+.table tbody td a:hover {
+    background-color: #218838;
+}
 
-{% for resource in resources %}
-<tr>
-<td>{{ resource.id }}</td>
-<td>{{ resource.title }}</td>
-<td>
-<a href="{{ resource.file.url }}" target="_blank">
-Download
-</a>
-</td>
-</tr>
-{% endfor %}
+/* Responsive */
+@media (max-width: 768px){
+    .resource-card { padding: 15px; }
+    .header h2 { font-size: 24px; }
+    .btn-resource { font-size: 12px; }
+}
 
-</table>
+@media (max-width: 576px){
+    .header h2 { font-size: 22px; }
+    .resource-card { padding: 10px; }
+    .btn-resource { font-size: 11px; }
+}
+</style>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>📤 Upload Resources</h2>
+        <p>Ajoutez et partagez des fichiers avec les étudiants ou utilisateurs de la plateforme.</p>
+    </div>
+
+    <!-- Upload Form -->
+    <div class="mb-4">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-success btn-resource">Upload</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <!-- Uploaded Resources Grid -->
+    <h4 class="mb-3">📂 Available Resources</h4>
+    <div class="row">
+        {% for resource in resources %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="resource-card">
+                <h5>{{ resource.title }}</h5>
+                <p class="text-muted">{{ resource.description|default:"No description available" }}</p>
+                <a href="{{ resource.file.url }}" target="_blank" class="btn btn-success btn-resource">Download</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Aucune ressource disponible pour l’instant.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Suggested Resources -->
+    <h4 class="mt-5 mb-3">💡 Suggested Resources</h4>
+    <div class="row">
+        {% for suggestion in suggested_resources %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="resource-card">
+                <h5>{{ suggestion.title }}</h5>
+                <p class="text-muted">{{ suggestion.description|default:"No description available" }}</p>
+                <a href="{{ suggestion.file.url }}" target="_blank" class="btn btn-primary btn-resource">Download</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
 </div>
-
 {% endblock %}
