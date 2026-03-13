@@ -1,7 +1,113 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>🏆 My Certificates</h2>
-    <p>Vos certificats obtenus apparaîtront ici.</p>
+<style>
+/* Container centré */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+/* Header */
+.header h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.header p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Certificates Grid */
+.cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* Certificate Card */
+.cert-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cert-card:hover {
+    transform: translateY(-5px);
+}
+
+.cert-card img {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.cert-card h5 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.cert-card p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.cert-card .btn-dashboard {
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 8px;
+    transition: 0.3s;
+    margin-bottom: 5px;
+}
+
+.cert-card .btn-dashboard:hover {
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 576px){
+    .header h2 { font-size: 24px; }
+    .cert-card h5 { font-size: 16px; }
+    .cert-card p { font-size: 12px; }
+    .cert-card .btn-dashboard { font-size: 12px; padding: 8px; }
+}
+</style>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>🏆 My Certificates</h2>
+        <p>Vos certificats obtenus apparaîtront ici. Téléchargez-les ou visualisez-les en ligne.</p>
+    </div>
+
+    <!-- Certificates Grid -->
+    <div class="cert-grid">
+        {% for certificate in certificates %}
+        <div class="cert-card">
+            <img src="{{ certificate.image.url }}" alt="{{ certificate.title }}">
+            <h5>{{ certificate.title }}</h5>
+            <p>Obtained: {{ certificate.date|date:"d M Y" }}</p>
+            <a href="{{ certificate.file.url }}" class="btn btn-success btn-dashboard" target="_blank">📄 Download</a>
+            <a href="{% url 'view_certificate' certificate.id %}" class="btn btn-primary btn-dashboard">👁 View</a>
+        </div>
+        {% empty %}
+        <div class="text-muted">Vous n’avez encore aucun certificat.</div>
+        {% endfor %}
+    </div>
+
 </div>
 {% endblock %}
