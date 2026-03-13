@@ -2,6 +2,7 @@ from django import forms
 from .models import Course, Lesson
 from django.contrib.auth.models import User
 from .models import Category, Resource, Feedback
+from .models import Profile  # modèle à créer pour la photo et la bio
 
 
 class CourseForm(forms.ModelForm):
@@ -60,3 +61,12 @@ class FeedbackForm(forms.ModelForm):
         model = Feedback
         fields = ['message']
 
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['image', 'bio']
+        widgets = {
+            'bio': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Écrivez quelque chose sur vous...'}),
+        }
