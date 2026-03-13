@@ -1,7 +1,145 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>🛠 Help Center</h2>
-    <p>Trouvez des réponses aux questions fréquentes et obtenez de l’aide.</p>
+<style>
+/* Wrapper principal pour centrer mais garder proche du bord gauche */
+.page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.header p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Card FAQ / Guide */
+.card-help {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    text-align: left; /* alignement du contenu à gauche */
+}
+
+.card-help:hover {
+    transform: translateY(-5px);
+}
+
+/* Buttons */
+.btn-help {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* Table / Links styles */
+.table thead th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.table tbody td a {
+    color: #fff;
+    background-color: #28a745;
+    padding: 5px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.table tbody td a:hover {
+    background-color: #218838;
+}
+
+/* Responsive */
+@media (max-width: 768px){
+    .card-help { padding: 15px; }
+    .header h2 { font-size: 24px; }
+    .btn-help { font-size: 12px; }
+}
+
+@media (max-width: 576px){
+    .header h2 { font-size: 22px; }
+    .card-help { padding: 10px; }
+    .btn-help { font-size: 11px; }
+}
+</style>
+
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="header text-center">
+        <h2>🛠 Help Center</h2>
+        <p>Trouvez des réponses aux questions fréquentes et obtenez de l’aide rapidement.</p>
+    </div>
+
+    <!-- FAQ Section -->
+    <h4 class="mb-3">❓ Frequently Asked Questions</h4>
+    <div class="row">
+        {% for faq in faqs %}
+        <div class="col-md-6 mb-4">
+            <div class="card card-help">
+                <h5>{{ faq.question }}</h5>
+                <p>{{ faq.answer }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Aucune question fréquente disponible pour l’instant.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- User Guides Section -->
+    <h4 class="mt-5 mb-3">📘 User Guides</h4>
+    <div class="row">
+        {% for guide in guides %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card card-help">
+                <h5>{{ guide.title }}</h5>
+                <p class="text-muted">{{ guide.description|truncatewords:20 }}</p>
+                <a href="{{ guide.file.url }}" target="_blank" class="btn btn-success btn-help w-100">Download Guide</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Aucun guide disponible pour l’instant.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Contact Support Section -->
+    <h4 class="mt-5 mb-3">📬 Contact Support</h4>
+    <div class="card card-help p-4 mb-4">
+        <p>Si vous ne trouvez pas de solution dans les FAQ ou guides, contactez notre équipe de support.</p>
+        <a href="{% url 'contact_support' %}" class="btn btn-primary btn-help">Contact Support</a>
+    </div>
+
+    <!-- Suggested Articles Section -->
+    <h4 class="mt-5 mb-3">💡 Suggested Articles</h4>
+    <div class="row">
+        {% for article in suggested_articles %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card card-help">
+                <h5>{{ article.title }}</h5>
+                <p>{{ article.summary|truncatewords:25 }}</p>
+                <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-help w-100">Read More</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
 {% endblock %}
