@@ -1,7 +1,229 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>🎯 Learning Challenges</h2>
-    <p>Participez à des défis d’apprentissage pour progresser plus vite.</p>
-</div>
+<style>
+/* Wrapper principal pour alignement proche du dashboard */
+.page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Section titres */
+.page-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-title h2 {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.page-title p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Challenge cards */
+.card-challenge {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+    transition: 0.3s;
+    text-align: left; /* contenu aligné à gauche */
+}
+
+.card-challenge:hover {
+    transform: translateY(-5px);
+}
+
+.card-challenge img {
+    height: 180px;
+    object-fit: cover;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.card-challenge .card-body {
+    padding: 15px;
+}
+
+.card-challenge h5 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-challenge p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.btn-challenge {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Stats badges */
+.badge-challenge {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 12px;
+    margin-right: 5px;
+}
+
+/* Recent activities */
+.activity-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 992px){
+    .card-challenge img { height: 150px; }
+}
+
+@media (max-width: 576px){
+    .card-challenge img { height: 120px; }
+    .card-challenge h5 { font-size: 16px; }
+    .btn-challenge { font-size: 12px; padding: 8px; }
+}
+</style>
+
+<div class="page-wrapper mt-5">
+
+    <!-- Page header -->
+    <div class="page-title">
+        <h2>🎯 Learning Challenges</h2>
+        <p>Participez à des défis d’apprentissage pour progresser plus vite et gagner des badges !</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4 text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card card-challenge p-3">
+                <h5>Total Challenges</h5>
+                <div class="stat-number text-primary">{{ total_challenges }}</div>
+                <p class="text-muted">Défis disponibles</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card card-challenge p-3">
+                <h5>Challenges Completed</h5>
+                <div class="stat-number text-success">{{ completed_challenges }}</div>
+                <p class="text-muted">Défis terminés</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card card-challenge p-3">
+                <h5>Badges Earned</h5>
+                <div class="stat-number text-warning">{{ badges_count }}</div>
+                <p class="text-muted">Badges obtenus</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card card-challenge p-3">
+                <h5>Current Streak</h5>
+                <div class="stat-number text-danger">{{ current_streak }} jours</div>
+                <p class="text-muted">Jours consécutifs</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Challenges -->
+    <h3 class="mb-3">🔥 Active Challenges</h3>
+    <div class="row mb-5">
+        {% for challenge in active_challenges %}
+        <div class="col-md-4 mb-4">
+            <div class="card card-challenge">
+                <img src="{{ challenge.image.url }}" alt="{{ challenge.title }}">
+                <div class="card-body text-left">
+                    <h5>{{ challenge.title }}</h5>
+                    <p>{{ challenge.description|truncatewords:20 }}</p>
+                    <div class="mb-2">
+                        <span class="badge bg-success badge-challenge">{{ challenge.level }}</span>
+                        <span class="badge bg-primary badge-challenge">{{ challenge.category }}</span>
+                    </div>
+                    <a href="{% url 'join_challenge' challenge.id %}" class="btn btn-success btn-challenge">Join Challenge</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">Aucun défi actif pour le moment. Revenez bientôt !</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Completed Challenges -->
+    <h3 class="mb-3">✅ Completed Challenges</h3>
+    <div class="row mb-5">
+        {% for challenge in completed_challenges_list %}
+        <div class="col-md-3 mb-4">
+            <div class="card card-challenge text-center p-3">
+                <h5>{{ challenge.title }}</h5>
+                <p class="text-muted">Complété le {{ challenge.completed_at|date:"d M Y" }}</p>
+                <span class="badge bg-warning badge-challenge">Badge Earned</span>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">Vous n’avez encore complété aucun défi.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Recent Activity -->
+    <h3 class="mb-3">📊 Recent Activity</h3>
+    <div class="card card-challenge p-4 mb-4">
+        {% for activity in recent_activities %}
+            <div class="activity-item">{{ activity }}</div>
+        {% empty %}
+            <div class="text-muted">Aucune activité récente</div>
+        {% endfor %}
+    </div>
+
+    <!-- Leaderboard -->
+    <h3 class="mb-3">🏆 Leaderboard</h3>
+    <div class="card card-challenge p-4 mb-5">
+        <table class="table table-striped text-center mb-0">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Challenges Completed</th>
+                    <th>Badges</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in leaderboard %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.completed_challenges }}</td>
+                    <td>{{ user.badges_count }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">Leaderboard vide pour le moment</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Motivation Section -->
+    <div class="card card-challenge mt-5 p-5 text-center">
+        <h4>🚀 Keep Challenging Yourself!</h4>
+        <p class="text-muted">Plus vous participez aux défis, plus vous progressez rapidement. Relevez de nouveaux défis chaque semaine !</p>
+        <a href="{% url 'active_challenge' %}" class="btn btn-success btn-lg mt-3">Voir Tous les Défis</a>
+    </div>
+
+</div> <!-- page-wrapper -->
+
 {% endblock %}
