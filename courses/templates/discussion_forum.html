@@ -1,7 +1,206 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-5">
-    <h2>💬 Discussion Forum</h2>
-    <p>Participez aux discussions avec les autres étudiants.</p>
+<style>
+/* ---------------- Sidebar vertical ---------------- */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 260px;
+    background-color: #343a40;
+    color: white;
+    padding-top: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar h4 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    color: white;
+    display: block;
+    padding: 12px 20px;
+    text-decoration: none;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+    text-decoration: none;
+}
+
+.sidebar .active {
+    background-color: #007bff;
+}
+
+/* Main content centré */
+.main-content {
+    margin-left: 270px; /* laisse place à la sidebar */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Container centré */
+.container {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.header p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Forum cards */
+.card-forum {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.card-forum:hover {
+    transform: translateY(-3px);
+}
+
+.card-forum h5 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.card-forum p {
+    font-size: 14px;
+    color: #555;
+}
+
+.card-forum .btn-forum {
+    margin-top: 10px;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.comment-section {
+    margin-top: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.comment {
+    margin-bottom: 10px;
+}
+
+.comment p {
+    font-size: 13px;
+    margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px){
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+    }
+    .main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+    .card-forum { padding: 15px; }
+    .btn-forum { font-size: 12px; padding: 6px 10px; }
+}
+
+@media (max-width: 576px){
+    .header h2 { font-size: 24px; }
+}
+</style>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h4>🛠 Dashboard</h4>
+    <a href="{% url 'dashboard_admin' %}">Accueil</a>
+    <a href="{% url 'courses' %}">Cours</a>
+    <a href="{% url 'add_course' %}">Ajouter Cours</a>
+    <a href="{% url 'lesson_list' 1 %}">Leçons</a>
+    <a href="{% url 'forum' %}">Forum</a>
+    <a href="{% url 'certificates' %}">Certificats</a>
+    <a href="{% url 'progress' %}">Progression</a>
+    <a href="{% url 'logout_view' %}">Déconnexion</a>
+</div>
+
+<!-- Main content -->
+<div class="main-content">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <h2>💬 Discussion Forum</h2>
+            <p>Participez aux discussions avec les autres étudiants et posez vos questions.</p>
+        </div>
+
+        <!-- Forum Posts -->
+        <div class="row justify-content-center">
+            {% for post in forum_posts %}
+            <div class="col-md-6 mb-4 d-flex justify-content-center">
+                <div class="card-forum">
+                    <h5>{{ post.title }}</h5>
+                    <p>{{ post.content|truncatewords:25 }}</p>
+                    <p class="text-muted">Posté par <strong>{{ post.author.username }}</strong> - {{ post.created_at|date:"d M Y H:i" }}</p>
+                    <a href="{% url 'forum_post_detail' post.id %}" class="btn btn-primary btn-forum w-100">Voir la discussion</a>
+
+                    <!-- Example comments preview -->
+                    <div class="comment-section">
+                        {% for comment in post.comments.all|slice:":3" %}
+                        <div class="comment">
+                            <p><strong>{{ comment.author.username }}</strong>: {{ comment.content|truncatewords:10 }}</p>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted">Pas encore de commentaires</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">Aucun post disponible pour le moment. Créez le premier !</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Create New Post -->
+        <div class="mt-5 mb-5" style="width:100%;">
+            <h4>➕ Créer un nouveau post</h4>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-success w-100">Publier</button>
+            </form>
+        </div>
+
+    </div>
 </div>
 {% endblock %}
