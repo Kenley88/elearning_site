@@ -1,7 +1,122 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>📄 Download PDFs</h2>
-    <p>Téléchargez vos documents pédagogiques ici.</p>
-</div>
+<style>
+/* Wrapper principal pour alignement proche du dashboard */
+.page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h2 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.header p {
+    color: #555;
+    font-size: 14px;
+}
+
+/* PDF Cards */
+.card-pdf {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.card-pdf:hover {
+    transform: translateY(-5px);
+}
+
+.card-pdf h5 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.card-pdf a {
+    text-decoration: none;
+    color: white;
+}
+
+.btn-pdf {
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.btn-pdf:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive */
+@media (max-width: 992px){
+    .card-pdf { padding: 15px; }
+    .btn-pdf { font-size: 13px; padding: 8px; }
+}
+
+@media (max-width: 768px){
+    .card-pdf { padding: 12px; }
+    .btn-pdf { font-size: 12px; padding: 6px; }
+}
+
+@media (max-width: 576px){
+    .header h2 { font-size: 22px; }
+}
+</style>
+
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="header">
+        <h2>📄 Download PDFs</h2>
+        <p>Téléchargez vos documents pédagogiques ici.</p>
+    </div>
+
+    <!-- PDF List -->
+    <div class="row">
+        {% for pdf in pdf_files %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card-pdf">
+                <h5>{{ pdf.title }}</h5>
+                <p>{{ pdf.description|truncatewords:15 }}</p>
+                <a href="{{ pdf.file.url }}" target="_blank" class="btn btn-pdf w-100">Download PDF</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">Aucun PDF disponible pour le moment.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Suggested PDFs -->
+    <h4 class="mt-5 mb-3">💡 Suggested PDFs</h4>
+    <div class="row">
+        {% for pdf in suggested_pdfs %}
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="card-pdf">
+                <h5>{{ pdf.title }}</h5>
+                <p>{{ pdf.description|truncatewords:10 }}</p>
+                <a href="{{ pdf.file.url }}" target="_blank" class="btn btn-pdf w-100">Download</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div> <!-- page-wrapper -->
 {% endblock %}
