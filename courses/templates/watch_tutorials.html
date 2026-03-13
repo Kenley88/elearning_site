@@ -1,7 +1,380 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<style>
+/* Sidebar fixe */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background-color: #343a40;
+    color: white;
+    padding-top: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar h4 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+}
+
+.sidebar .active {
+    background-color: #007bff;
+}
+
+/* Contenu principal */
+.main-content {
+    margin-left: 270px; /* laisse toujours la place à la sidebar */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centre horizontal */
+    min-height: 100vh;
+}
+
+/* Container centré */
+.container {
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Cards */
+.card-dashboard {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+    transition: 0.3s;
+    margin-bottom: 20px;
+}
+
+.card-dashboard:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .main-content { margin-left: 270px; }
+}
+
+@media (max-width: 992px) {
+    .main-content { margin-left: 270px; }
+}
+
+@media (max-width: 767px){
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    .main-content {
+        margin-left: 0; /* sur petit écran, sidebar prend tout */
+        padding: 10px;
+    }
+}
+</style>
+
+
 <div class="container mt-5">
+
     <h2>🎥 Watch Tutorials</h2>
     <p>Accédez à toutes les vidéos et tutoriels pour approfondir vos connaissances.</p>
-</div>
+
+    <hr>
+
+    <div class="row">
+
+        <!-- Tutoriel 1 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+1" class="card-img-top" alt="Tuto 1">
+                <div class="card-body">
+                    <h5>Tuto 1: Introduction au Python</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 2 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+2" class="card-img-top" alt="Tuto 2">
+                <div class="card-body">
+                    <h5>Tuto 2: Variables et Types de Données</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 3 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+3" class="card-img-top" alt="Tuto 3">
+                <div class="card-body">
+                    <h5>Tuto 3: Boucles et Conditions</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 4 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+4" class="card-img-top" alt="Tuto 4">
+                <div class="card-body">
+                    <h5>Tuto 4: Fonctions en Python</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 5 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+5" class="card-img-top" alt="Tuto 5">
+                <div class="card-body">
+                    <h5>Tuto 5: Listes et Dictionnaires</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 6 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+6" class="card-img-top" alt="Tuto 6">
+                <div class="card-body">
+                    <h5>Tuto 6: Modules et Packages</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 7 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+7" class="card-img-top" alt="Tuto 7">
+                <div class="card-body">
+                    <h5>Tuto 7: Fichiers et Entrées/Sorties</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 8 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+8" class="card-img-top" alt="Tuto 8">
+                <div class="card-body">
+                    <h5>Tuto 8: Exceptions et Gestion des Erreurs</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 9 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+9" class="card-img-top" alt="Tuto 9">
+                <div class="card-body">
+                    <h5>Tuto 9: Programmation Orientée Objet</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 10 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+10" class="card-img-top" alt="Tuto 10">
+                <div class="card-body">
+                    <h5>Tuto 10: Gestion des Listes Avancées</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 11 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+11" class="card-img-top" alt="Tuto 11">
+                <div class="card-body">
+                    <h5>Tuto 11: Décorateurs et Fonctions Avancées</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 12 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+12" class="card-img-top" alt="Tuto 12">
+                <div class="card-body">
+                    <h5>Tuto 12: Générateurs et Iterators</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 13 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+13" class="card-img-top" alt="Tuto 13">
+                <div class="card-body">
+                    <h5>Tuto 13: Compréhension de Listes</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 14 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+14" class="card-img-top" alt="Tuto 14">
+                <div class="card-body">
+                    <h5>Tuto 14: Manipulation de Strings</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 15 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+15" class="card-img-top" alt="Tuto 15">
+                <div class="card-body">
+                    <h5>Tuto 15: Modules Standard Python</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 16 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+16" class="card-img-top" alt="Tuto 16">
+                <div class="card-body">
+                    <h5>Tuto 16: Gestion des Fichiers CSV</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 17 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+17" class="card-img-top" alt="Tuto 17">
+                <div class="card-body">
+                    <h5>Tuto 17: Introduction à Django</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 18 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+18" class="card-img-top" alt="Tuto 18">
+                <div class="card-body">
+                    <h5>Tuto 18: Templates Django</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 19 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+19" class="card-img-top" alt="Tuto 19">
+                <div class="card-body">
+                    <h5>Tuto 19: Formulaires Django</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 20 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+20" class="card-img-top" alt="Tuto 20">
+                <div class="card-body">
+                    <h5>Tuto 20: Models et Bases de Données</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 21 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+21" class="card-img-top" alt="Tuto 21">
+                <div class="card-body">
+                    <h5>Tuto 21: URL Routing Django</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 22 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+22" class="card-img-top" alt="Tuto 22">
+                <div class="card-body">
+                    <h5>Tuto 22: Authentification Django</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 23 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+23" class="card-img-top" alt="Tuto 23">
+                <div class="card-body">
+                    <h5>Tuto 23: Django Admin</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 24 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+24" class="card-img-top" alt="Tuto 24">
+                <div class="card-body">
+                    <h5>Tuto 24: Déploiement Django</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutoriel 25 -->
+        <div class="col-md-4 mb-3">
+            <div class="card card-dashboard">
+                <img src="https://via.placeholder.com/300x150.png?text=Tuto+25" class="card-img-top" alt="Tuto 25">
+                <div class="card-body">
+                    <h5>Tuto 25: Bonnes Pratiques Python</h5>
+                    <a href="#" class="btn btn-primary btn-sm w-100">Voir Tutoriel</a>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- row -->
+
+</div> <!-- container -->
 {% endblock %}
