@@ -40,41 +40,91 @@
     background-color: #007bff;
 }
 
-/* Main content */
+/* Main content centré */
 .main-content {
-    margin-left: 270px; /* width sidebar + spacing */
+    margin-left: 270px; /* largeur sidebar */
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centre horizontal */
+    justify-content: flex-start; /* haut de la page */
+    min-height: 100vh;
+}
+
+/* Container centré */
+.container {
+    width: 100%;
+    max-width: 1200px;
 }
 
 /* Dashboard cards */
-.card-dashboard{
+.card-dashboard {
     border:none;
     border-radius:15px;
     box-shadow:0px 5px 20px rgba(0,0,0,0.1);
     transition:0.3s;
 }
 
-.card-dashboard:hover{
+.card-dashboard:hover {
     transform:translateY(-5px);
 }
 
-.progress{
+.progress {
     height:12px;
     border-radius:20px;
 }
 
-.stat-number{
+.stat-number {
     font-size:28px;
     font-weight:bold;
 }
 
-.activity-item{
+.activity-item {
     border-bottom:1px solid #eee;
     padding:10px 0;
 }
 
+/* Buttons Quick Actions & Admin Tools */
+.btn-dashboard {
+    padding:15px;
+    font-size:14px;
+    margin-bottom:10px;
+}
+
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1200px){
+.card-dashboard img { height:160px; }
+.dashboard-title { font-size:28px; }
+}
+
+@media (max-width: 992px){
+.stat-number{ font-size:24px; }
+.btn-dashboard{ padding:14px; font-size:14px; }
+}
+
+/* Sidebar fixe uniquement sur écran large */
+@media (min-width: 768px){
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 260px;
+        background-color: #343a40;
+        color: white;
+        padding-top: 20px;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+    .main-content {
+        margin-left: 270px; /* laisse place à la sidebar */
+        padding: 20px;
+    }
+}
+
+
+/* Sidebar normale sur petit écran */
+@media (max-width: 767px){
     .sidebar {
         position: relative;
         width: 100%;
@@ -85,16 +135,22 @@
         padding: 10px;
     }
 }
+
+@media (max-width: 576px){
+.dashboard-title{ font-size:22px; }
+.stat-number{ font-size:20px; }
+.card-dashboard img{ height:130px; }
+.btn-dashboard{ font-size:12px; padding:8px; }
+}
 </style>
 
 <!-- ---------------- Sidebar ---------------- -->
 <div class="sidebar">
     <h4>🛠 Admin Dashboard</h4>
-    <a href="{% url 'dashboard_admin' %}" class="active">Accueil</a>
+    <a href="{% url 'home' %}" class="active">Accueil</a>
     <a href="{% url 'courses' %}">Gérer les cours</a>
     <a href="{% url 'add_course' %}">Ajouter un cours</a>
     <a href="{% url 'lesson_list' 1 %}">Gérer les leçons</a>
-    <!-- Sidebar -->
     <a href="{% url 'manage_users' %}">Gérer les utilisateurs</a>
     <a href="{% url 'certificates' %}">Certificats</a>
     <a href="{% url 'progress' %}">Progression</a>
@@ -108,7 +164,7 @@
 <div class="container">
 
 <!-- HEADER -->
-<div class="mb-4">
+<div class="mb-4 text-center">
 <h1 class="dashboard-title">🛠 Admin Dashboard</h1>
 <p class="text-muted">
 Bienvenue <strong>{{ user.username }}</strong> 👋  
@@ -117,30 +173,30 @@ Gérez les cours, les leçons, les utilisateurs et suivez les statistiques globa
 </div>
 
 <!-- STATISTICS -->
-<div class="row mb-4">
-<div class="col-md-3">
-<div class="card card-dashboard text-center p-4">
+<div class="row mb-4 text-center justify-content-center">
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card card-dashboard p-4">
 <h5>Total Courses</h5>
 <div class="stat-number text-primary">{{ courses_count }}</div>
 <p class="text-muted">Courses disponibles</p>
 </div>
 </div>
-<div class="col-md-3">
-<div class="card card-dashboard text-center p-4">
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card card-dashboard p-4">
 <h5>Total Lessons</h5>
 <div class="stat-number text-success">{{ lessons_count }}</div>
 <p class="text-muted">Leçons disponibles</p>
 </div>
 </div>
-<div class="col-md-3">
-<div class="card card-dashboard text-center p-4">
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card card-dashboard p-4">
 <h5>Total Users</h5>
 <div class="stat-number text-warning">{{ users_count }}</div>
 <p class="text-muted">Utilisateurs inscrits</p>
 </div>
 </div>
-<div class="col-md-3">
-<div class="card card-dashboard text-center p-4">
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-3">
+<div class="card card-dashboard p-4">
 <h5>Active Enrollments</h5>
 <div class="stat-number text-danger">{{ enrollments_count }}</div>
 <p class="text-muted">Inscriptions en cours</p>
@@ -149,19 +205,27 @@ Gérez les cours, les leçons, les utilisateurs et suivez les statistiques globa
 </div>
 
 <!-- QUICK ACTIONS -->
-<h3 class="mb-3">⚡ Quick Actions</h3>
-<div class="row mb-5">
-<div class="col-md-3"><a href="{% url 'courses' %}" class="btn btn-primary w-100 p-3">📚 Manage Courses</a></div>
-<div class="col-md-3"><a href="{% url 'add_course' %}" class="btn btn-success w-100 p-3">➕ Add Course</a></div>
-<div class="col-md-3"><a href="{% url 'lesson_list' 1 %}" class="btn btn-warning w-100 p-3">📖 Manage Lessons</a></div>
-<div class="col-md-3"><a href="{% url 'manage_users' %}" class="btn btn-dark w-100 p-3">👥 Manage Users</a></div>
+<h3 class="mb-3 text-center">⚡ Quick Actions</h3>
+<div class="row mb-5 justify-content-center">
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 text-center">
+<a href="{% url 'courses' %}" class="btn btn-primary w-100 btn-dashboard">📚 Manage Courses</a>
+</div>
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 text-center">
+<a href="{% url 'add_course' %}" class="btn btn-success w-100 btn-dashboard">➕ Add Course</a>
+</div>
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 text-center">
+<a href="{% url 'lesson_list' 1 %}" class="btn btn-warning w-100 btn-dashboard">📖 Manage Lessons</a>
+</div>
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 text-center">
+<a href="{% url 'manage_users' %}" class="btn btn-dark w-100 btn-dashboard">👥 Manage Users</a>
+</div>
 </div>
 
 <!-- COURSES MANAGEMENT TABLE -->
-<h3 class="mt-5 mb-3">📚 Courses Management</h3>
-<div class="card card-dashboard p-4 mb-4">
-<table class="table table-striped">
-<thead>
+<h3 class="mt-5 mb-3 text-center">📚 Courses Management</h3>
+<div class="card card-dashboard p-4 mb-4 table-responsive">
+<table class="table table-striped table-bordered align-middle text-center">
+<thead class="table-dark">
 <tr>
 <th>ID</th>
 <th>Title</th>
@@ -182,16 +246,18 @@ Gérez les cours, les leçons, les utilisateurs et suivez les statistiques globa
 <a href="{% url 'delete_course' course.id %}" class="btn btn-danger btn-sm">Delete</a>
 </td>
 </tr>
+{% empty %}
+<tr><td colspan="5" class="text-center text-muted">No courses found</td></tr>
 {% endfor %}
 </tbody>
 </table>
 </div>
 
 <!-- LESSONS MANAGEMENT -->
-<h3 class="mt-5 mb-3">📖 Lessons Management</h3>
-<div class="card card-dashboard p-4 mb-4">
-<table class="table table-striped">
-<thead>
+<h3 class="mt-5 mb-3 text-center">📖 Lessons Management</h3>
+<div class="card card-dashboard p-4 mb-4 table-responsive">
+<table class="table table-striped table-bordered align-middle text-center">
+<thead class="table-dark">
 <tr>
 <th>ID</th>
 <th>Lesson Title</th>
@@ -210,14 +276,16 @@ Gérez les cours, les leçons, les utilisateurs et suivez les statistiques globa
 <a href="{% url 'delete_lesson' lesson.id %}" class="btn btn-danger btn-sm">Delete</a>
 </td>
 </tr>
+{% empty %}
+<tr><td colspan="4" class="text-center text-muted">No lessons found</td></tr>
 {% endfor %}
 </tbody>
 </table>
 </div>
 
 <!-- RECENT ACTIVITIES -->
-<h3 class="mt-5 mb-3">📊 Recent Activities</h3>
-<div class="card card-dashboard p-4 mb-4">
+<h3 class="mt-5 mb-3 text-center">📊 Recent Activities</h3>
+<div class="card card-dashboard p-4 mb-4 text-center">
 {% for activity in recent_activities %}
 <div class="activity-item">{{ activity }}</div>
 {% empty %}
@@ -226,9 +294,9 @@ Gérez les cours, les leçons, les utilisateurs et suivez les statistiques globa
 </div>
 
 <!-- NOTIFICATIONS -->
-<h3 class="mt-5 mb-3">🔔 Notifications</h3>
-<div class="card card-dashboard p-4 mb-4">
-<ul>
+<h3 class="mt-5 mb-3 text-center">🔔 Notifications</h3>
+<div class="card card-dashboard p-4 mb-4 text-center">
+<ul class="list-unstyled">
 <li>📢 New course requests</li>
 <li>📝 Lesson updates pending</li>
 <li>👥 New user registrations</li>
@@ -237,12 +305,20 @@ Gérez les cours, les leçons, les utilisateurs et suivez les statistiques globa
 </div>
 
 <!-- ADMIN TOOLS -->
-<h3 class="mt-5 mb-3">🛠 Admin Tools</h3>
-<div class="row mb-5">
-<div class="col-md-3"><a href="{% url 'manage_categories' %}" class="btn btn-outline-primary w-100 mb-2">Manage Categories</a></div>
-<div class="col-md-3"><a href="{% url 'upload_resources' %}" class="btn btn-outline-success w-100 mb-2">Upload Resources</a></div>
-<div class="col-md-3"><a href="{% url 'review_feedback' %}" class="btn btn-outline-warning w-100 mb-2">Review Feedback</a></div>
-<div class="col-md-3"><a href="{% url 'system_settings' %}" class="btn btn-outline-danger w-100 mb-2">System Settings</a></div>
+<h3 class="mt-5 mb-3 text-center">🛠 Admin Tools</h3>
+<div class="row mb-5 justify-content-center text-center">
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+<a href="{% url 'manage_categories' %}" class="btn btn-outline-primary w-100 btn-dashboard">Manage Categories</a>
+</div>
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+<a href="{% url 'upload_resources' %}" class="btn btn-outline-success w-100 btn-dashboard">Upload Resources</a>
+</div>
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+<a href="{% url 'review_feedback' %}" class="btn btn-outline-warning w-100 btn-dashboard">Review Feedback</a>
+</div>
+<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+<a href="{% url 'system_settings' %}" class="btn btn-outline-danger w-100 btn-dashboard">System Settings</a>
+</div>
 </div>
 
 <!-- MOTIVATION / REMINDER -->
