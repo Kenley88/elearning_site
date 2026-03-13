@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     # ---------------- PUBLIC ----------------
     path('', views.home, name='home'),
+    path('home/', views.home_view, name='home'),
+
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login_view'),
     path('logout/', views.logout_view, name='logout_view'),
@@ -70,6 +72,9 @@ urlpatterns = [
     path('community/study-groups/', views.study_groups, name='study_groups'),
     path('community/challenges/', views.learning_challenges, name='learning_challenges'),
 
+    path('profile/', views.profile_view, name='profile'),
+
+
     # ---------------- SUPPORT ----------------
     path('support/help-center/', views.help_center, name='help_center'),
     path('support/report-issue/', views.report_issue, name='report_issue'),
@@ -79,4 +84,13 @@ urlpatterns = [
     # ---------------- ACCOUNT ----------------
     path('account/edit-profile/', views.edit_profile, name='edit_profile'),
     path('account/change-password/', views.change_password, name='change_password'),
+
+    path('forum/', views.discussion_forum, name='forum'),  # <- ici on nomme la route 'forum'
+    path('forum/<int:post_id>/', views.forum_post_detail, name='forum_post_detail'),
+    
+
+    path('challenges/', views.learning_challenges, name='learning_challenges'),
+    path('challenges/active/', views.active_challenge, name='active_challenge'),  # <-- IMPORTANT
+    path('community/challenges/', views.learning_challenges, name='learning_challenges'),
+    path('community/challenges/active/', views.active_challenge, name='active_challenge'),
 ]
